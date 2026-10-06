@@ -1,0 +1,46 @@
+{
+  "description": "인사나침반 수집 목록. 관리자가 직접 편집한다. 법령은 법제처 오픈 API로, 지침·간행물은 fileUrl(첨부파일 직접 주소)에서 가져온다. kogl(공공누리 유형)이 비어 있으면 수집하지 않는다. enabled가 false인 항목은 건너뛴다.",
+  "sources": [
+    {
+      "id": "law-national-public-officials-act",
+      "kind": "law",
+      "name": "국가공무원법",
+      "lawName": "국가공무원법",
+      "kogl": "법령(저작권 보호 대상 아님)",
+      "enabled": true
+    },
+    {
+      "id": "law-service-regulation",
+      "kind": "law",
+      "name": "국가공무원 복무규정",
+      "lawName": "국가공무원 복무규정",
+      "kogl": "법령(저작권 보호 대상 아님)",
+      "enabled": true
+    },
+    {
+      "id": "law-appointment-decree",
+      "kind": "law",
+      "name": "공무원임용령",
+      "lawName": "공무원임용령",
+      "kogl": "법령(저작권 보호 대상 아님)",
+      "enabled": true
+    },
+    {
+      "id": "law-disciplinary-decree",
+      "kind": "law",
+      "name": "공무원 징계령",
+      "lawName": "공무원 징계령",
+      "kogl": "법령(저작권 보호 대상 아님)",
+      "enabled": true
+    },
+    {
+      "id": "guideline-example",
+      "kind": "guideline",
+      "name": "(예시) 지침 이름을 적으세요",
+      "fileUrl": "",
+      "version": "",
+      "kogl": "",
+      "enabled": false
+    }
+  ]
+}

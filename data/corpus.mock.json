@@ -1,0 +1,155 @@
+{
+  "description": "모의 자료. 실제로 없는 가상의 규정·지침이며 화면 시연과 자동 시험에만 쓴다. 최신화 명령이 건드리지 않는다. '(모의) 육아휴직 경력 인정 예시 지침' 제5조는 개정 전·후 1쌍이다.",
+  "chunks": [
+    {
+      "id": "mock-leave-3",
+      "docName": "(모의) 공무원 휴직 예시 규정",
+      "location": "제3조",
+      "text": "공무원은 만 8세 이하 자녀를 양육하기 위하여 자녀 1명당 3년 이내의 육아휴직을 할 수 있다.",
+      "effectiveDate": "2025-01-01",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-leave-7",
+      "docName": "(모의) 공무원 휴직 예시 규정",
+      "location": "제7조",
+      "text": "휴직 중인 공무원은 승진임용될 수 없다. 다만, 육아휴직 중인 공무원은 승진 심사 대상에 포함될 수 있으며, 승진이 결정되면 복직한 날에 승진임용한다.",
+      "effectiveDate": "2025-01-01",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-career-5-old",
+      "docName": "(모의) 육아휴직 경력 인정 예시 지침",
+      "location": "제5조",
+      "text": "육아휴직 기간은 자녀 1명당 최초 1년까지만 승진 소요 경력에 포함한다.",
+      "effectiveDate": "2024-01-01",
+      "url": null,
+      "superseded": true,
+      "mock": true
+    },
+    {
+      "id": "mock-career-5-new",
+      "docName": "(모의) 육아휴직 경력 인정 예시 지침",
+      "location": "제5조",
+      "text": "육아휴직 기간은 자녀 1명당 전 기간(최대 3년)을 승진 소요 경력에 포함한다.",
+      "effectiveDate": "2025-07-01",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-service-9",
+      "docName": "(모의) 공무원 복무 예시 규정",
+      "location": "제9조",
+      "text": "공무원의 1주간 근무시간은 점심시간을 제외하고 40시간으로 하며, 1일 근무시간은 8시간으로 한다.",
+      "effectiveDate": "2024-07-01",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-service-12",
+      "docName": "(모의) 공무원 복무 예시 규정",
+      "location": "제12조",
+      "text": "공무원은 기관장의 승인을 받아 출퇴근 시각을 조정하는 시차출퇴근제를 신청할 수 있다. 이 경우 1일 최소 4시간 이상 근무하여야 한다.",
+      "effectiveDate": "2024-07-01",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-service-15",
+      "docName": "(모의) 공무원 복무 예시 규정",
+      "location": "제15조",
+      "text": "연가 일수는 재직기간에 따라 11일부터 21일까지로 한다.",
+      "effectiveDate": "2024-07-01",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-service-18",
+      "docName": "(모의) 공무원 복무 예시 규정",
+      "location": "제18조",
+      "text": "공무원은 질병 또는 부상으로 직무를 수행할 수 없을 때 연 60일의 범위에서 병가를 받을 수 있다.",
+      "effectiveDate": "2024-07-01",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-discipline-2",
+      "docName": "(모의) 공무원 징계 예시 규정",
+      "location": "제2조",
+      "text": "징계는 파면, 해임, 강등, 정직, 감봉, 견책으로 구분한다.",
+      "effectiveDate": "2023-03-01",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-discipline-4",
+      "docName": "(모의) 공무원 징계 예시 규정",
+      "location": "제4조",
+      "text": "정직은 1개월 이상 3개월 이하의 기간으로 하고, 정직 기간 중에는 보수의 전액을 감한다.",
+      "effectiveDate": "2023-03-01",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-discipline-6",
+      "docName": "(모의) 공무원 징계 예시 규정",
+      "location": "제6조",
+      "text": "견책 처분을 받은 공무원은 처분일부터 6개월 동안 승진임용될 수 없으며, 6개월이 지나면 징계 기록을 말소한다.",
+      "effectiveDate": "2023-03-01",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-training-p4",
+      "docName": "(모의) 공무원 교육훈련 예시 지침",
+      "location": "4쪽",
+      "text": "공무원은 직무역량 향상을 위하여 연간 100시간 이상의 상시학습을 이수하여야 한다.",
+      "effectiveDate": "2025-02-15",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-training-p7",
+      "docName": "(모의) 공무원 교육훈련 예시 지침",
+      "location": "7쪽",
+      "text": "신규 공무원은 임용된 날부터 1년 이내에 기본교육을 이수하여야 한다.",
+      "effectiveDate": "2025-02-15",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-travel-p3",
+      "docName": "(모의) 출장 여비 예시 지침",
+      "location": "3쪽",
+      "text": "출장 여비는 운임, 일비, 숙박비, 식비로 구분하여 지급한다.",
+      "effectiveDate": "2024-11-01",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    },
+    {
+      "id": "mock-travel-p5",
+      "docName": "(모의) 출장 여비 예시 지침",
+      "location": "5쪽",
+      "text": "국내 출장의 일비는 1일 2만원으로 한다.",
+      "effectiveDate": "2024-11-01",
+      "url": null,
+      "superseded": false,
+      "mock": true
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "description": "시험 질문 20개와 정답. 자동 시험(npm test)에서만 쓴다. 답변은 반드시 실제 검색 → 답변 만들기 경로로 만들어 채점하고, 이 파일의 내용을 답으로 내보내지 않는다. 정답은 corpus.mock.json 기준이다.",
+  "questions": [
+    {
+      "id": "q01",
+      "question": "육아휴직은 최대 몇 년까지 할 수 있나요?",
+      "category": "normal",
+      "expectedKeyPoints": ["3년"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 휴직 예시 규정", "location": "제3조", "effectiveDate": "2025-01-01" }]
+    },
+    {
+      "id": "q02",
+      "question": "육아휴직 중에도 승진할 수 있나요?",
+      "category": "normal",
+      "expectedKeyPoints": ["승진 심사 대상"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 휴직 예시 규정", "location": "제7조", "effectiveDate": "2025-01-01" }]
+    },
+    {
+      "id": "q03",
+      "question": "공무원의 1주간 근무시간은 몇 시간인가요?",
+      "category": "normal",
+      "expectedKeyPoints": ["40시간"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 복무 예시 규정", "location": "제9조", "effectiveDate": "2024-07-01" }]
+    },
+    {
+      "id": "q04",
+      "question": "시차출퇴근제를 쓰면 하루에 최소 몇 시간 근무해야 하나요?",
+      "category": "normal",
+      "expectedKeyPoints": ["4시간"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 복무 예시 규정", "location": "제12조", "effectiveDate": "2024-07-01" }]
+    },
+    {
+      "id": "q05",
+      "question": "연가는 며칠까지 받을 수 있나요?",
+      "category": "normal",
+      "expectedKeyPoints": ["21일"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 복무 예시 규정", "location": "제15조", "effectiveDate": "2024-07-01" }]
+    },
+    {
+      "id": "q06",
+      "question": "병가는 1년에 며칠까지 쓸 수 있나요?",
+      "category": "normal",
+      "expectedKeyPoints": ["60일"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 복무 예시 규정", "location": "제18조", "effectiveDate": "2024-07-01" }]
+    },
+    {
+      "id": "q07",
+      "question": "징계의 종류에는 어떤 것이 있나요?",
+      "category": "normal",
+      "expectedKeyPoints": ["견책"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 징계 예시 규정", "location": "제2조", "effectiveDate": "2023-03-01" }]
+    },
+    {
+      "id": "q08",
+      "question": "정직 기간은 얼마 동안인가요?",
+      "category": "normal",
+      "expectedKeyPoints": ["3개월"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 징계 예시 규정", "location": "제4조", "effectiveDate": "2023-03-01" }]
+    },
+    {
+      "id": "q09",
+      "question": "견책 징계 기록은 언제 말소되나요?",
+      "category": "normal",
+      "expectedKeyPoints": ["6개월"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 징계 예시 규정", "location": "제6조", "effectiveDate": "2023-03-01" }]
+    },
+    {
+      "id": "q10",
+      "question": "상시학습은 1년에 몇 시간 이수해야 하나요?",
+      "category": "normal",
+      "expectedKeyPoints": ["100시간"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 교육훈련 예시 지침", "location": "4쪽", "effectiveDate": "2025-02-15" }]
+    },
+    {
+      "id": "q11",
+      "question": "신규 공무원 기본교육은 언제까지 받아야 하나요?",
+      "category": "normal",
+      "expectedKeyPoints": ["1년"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 교육훈련 예시 지침", "location": "7쪽", "effectiveDate": "2025-02-15" }]
+    },
+    {
+      "id": "q12",
+      "question": "출장 여비는 어떤 항목으로 지급되나요?",
+      "category": "normal",
+      "expectedKeyPoints": ["일비"],
+      "expectedCitations": [{ "docName": "(모의) 출장 여비 예시 지침", "location": "3쪽", "effectiveDate": "2024-11-01" }]
+    },
+    {
+      "id": "q13",
+      "question": "국내 출장 일비는 하루에 얼마인가요?",
+      "category": "normal",
+      "expectedKeyPoints": ["2만원"],
+      "expectedCitations": [{ "docName": "(모의) 출장 여비 예시 지침", "location": "5쪽", "effectiveDate": "2024-11-01" }]
+    },
+    {
+      "id": "q14",
+      "question": "육아휴직 기간은 승진 소요 경력에 얼마나 인정되나요?",
+      "category": "superseded",
+      "expectedKeyPoints": ["전 기간"],
+      "expectedCitations": [{ "docName": "(모의) 육아휴직 경력 인정 예시 지침", "location": "제5조", "effectiveDate": "2025-07-01" }]
+    },
+    {
+      "id": "q15",
+      "question": "육아휴직 경력 인정 기준이 예전과 달라졌나요?",
+      "category": "superseded",
+      "expectedKeyPoints": ["전 기간"],
+      "expectedCitations": [{ "docName": "(모의) 육아휴직 경력 인정 예시 지침", "location": "제5조", "effectiveDate": "2025-07-01" }]
+    },
+    {
+      "id": "q16",
+      "question": "공무원 연금은 몇 살부터 받을 수 있나요?",
+      "category": "no-evidence",
+      "expectedKeyPoints": [],
+      "expectedCitations": []
+    },
+    {
+      "id": "q17",
+      "question": "국외 파견 근무자의 체재비 수당은 얼마인가요?",
+      "category": "no-evidence",
+      "expectedKeyPoints": [],
+      "expectedCitations": []
+    },
+    {
+      "id": "q18",
+      "question": "관사 입주 자격은 어떻게 되나요?",
+      "category": "no-evidence",
+      "expectedKeyPoints": [],
+      "expectedCitations": []
+    },
+    {
+      "id": "q19",
+      "question": "제가 작년에 견책을 받았는데 올해 승진할 수 있나요?",
+      "category": "individual",
+      "expectedKeyPoints": ["6개월"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 징계 예시 규정", "location": "제6조", "effectiveDate": "2023-03-01" }]
+    },
+    {
+      "id": "q20",
+      "question": "우리 직원이 정직 처분을 받으면 보수는 어떻게 되나요?",
+      "category": "individual",
+      "expectedKeyPoints": ["전액"],
+      "expectedCitations": [{ "docName": "(모의) 공무원 징계 예시 규정", "location": "제4조", "effectiveDate": "2023-03-01" }]
+    }
+  ]
+}
