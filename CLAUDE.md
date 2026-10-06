@@ -56,28 +56,35 @@
 
 ## 2. 폴더 구조
 
-현재는 `create-next-app` 기본 상태다. 아래는 **제안 구조**이며, 만들면서 확정되면 이 표를 갱신한다.
+[DESIGN.md](DESIGN.md) 11.1의 구조(C안)를 따른다. 구조가 바뀌면 DESIGN.md와 이 표를 함께 갱신한다.
 
 ```
-src/
-  app/
-    page.tsx              # 질문·답변 화면 (화면은 이 1개)
-    layout.tsx            # lang="ko", 메타데이터
-    api/
-      ask/route.ts        # 질문 → 답변 + 출처
-      draft/route.ts      # 답변 → 원고 → PPT/말씀자료 초안
-  components/             # 화면 컴포넌트
-  lib/
-    ai/                   # AI 호출 계층 (모의 모드 / 실제 모드 분기)
-    search/               # 수집 자료 검색
-    export/               # .pptx / .txt 생성
-  mocks/                  # 모의 모드용 예시 답변·결과물
 data/
   sources.json            # 관리자가 정하는 수집 목록 (법령명, 지침·간행물 주소)
-  docs/                   # 최신화 명령으로 변환·저장된 자료 텍스트
+  corpus.json             # 자료 묶음: 최신화 결과를 조각 단위로 저장한 파일 하나 (처음엔 모의 자료)
+  test-questions.json     # 시험 질문 20개 + 정답
 scripts/
-  update-sources.ts       # 관리자 최신화 명령 (수동 1회 실행)
+  update-sources.ts       # 관리자 최신화 명령 (관리자 컴퓨터에서 수동 실행)
+src/
+  proxy.ts                # 접속 비밀번호 확인
+  app/
+    page.tsx              # 대시보드 (질문·답변 + 결과물 패널)
+    login/                # 비밀번호 화면
+    api/ask/route.ts      # 질문 → 답변 + 출처
+    api/draft/route.ts    # 답변 → 원고 → 슬라이드/말씀자료
+    api/export/pptx/route.ts  # 슬라이드 → .pptx 파일
+  components/             # 화면 컴포넌트
+  lib/
+    types.ts              # 공통 데이터 형식
+    rules/                # 규칙 점검기
+    search/               # 자료 검색
+    ai/                   # 답변·원고 만들기 (모의 / 실제 분기, OPENAI_MODEL 상수)
+    draft/                # 슬라이드 나누기, 말씀자료 분량 맞추기
+    export/               # .pptx 생성
+    sources/              # 법제처 API, PDF·HWPX 변환 (최신화 명령 전용)
 ```
+
+- 자료는 `data/corpus.json` **파일 하나**에 모은다. 배포된 사이트는 이 파일을 읽기만 하고, 실행 중에 파일을 쓰지 않는다 (Vercel 제약).
 
 - import는 경로 별칭 `@/*`(= `src/*`)를 쓴다.
 - 기본은 서버 컴포넌트. 상태·이벤트가 필요한 컴포넌트에만 `"use client"`를 붙인다.
