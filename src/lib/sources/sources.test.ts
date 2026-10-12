@@ -65,10 +65,20 @@ describe("조각 나누기", () => {
     expect(pieces).toEqual([{ location: "문단 1", text: "유연근무제는 기관장 승인을 받아 신청합니다. 신청서는 전자결재로 제출합니다." }]);
   });
 
-  it("아주 긴 조항은 800자 이내로 나눈다", () => {
+  it("아주 긴 조항은 800자 이내로 나누고, 나눈 조각마다 서로 다른 이름을 붙인다", () => {
     const long = `제1조(목적) ${"이 규정은 복무에 관한 사항을 정한다. ".repeat(60)} 제2조(정의) 짧은 조항입니다.`;
     const pieces = piecesFromPages([long]);
-    expect(pieces.filter((p) => p.location === "제1조").length).toBeGreaterThan(1);
+    const first = pieces.filter((p) => p.location.startsWith("제1조"));
+    expect(first.length).toBeGreaterThan(1);
+    expect(first[0].location).toBe(`제1조 (1/${first.length})`);
+    expect(new Set(pieces.map((p) => p.location)).size).toBe(pieces.length);
+    expect(pieces.at(-1)?.location).toBe("제2조");
+    pieces.forEach((p) => expect(p.text.length).toBeLessThanOrEqual(800));
+  });
+
+  it("마침표 없이 아주 긴 문장도 800자 이내로 자른다", () => {
+    const pieces = piecesFromPages([`첫 쪽 ${"가".repeat(2000)}`]);
+    expect(pieces.length).toBe(3);
     pieces.forEach((p) => expect(p.text.length).toBeLessThanOrEqual(800));
   });
 });
@@ -76,8 +86,9 @@ describe("조각 나누기", () => {
 describe("개인 이름 경고", () => {
   it("인사 명단으로 보이면 경고하고, 일반 지침은 경고하지 않는다", () => {
     expect(personnelListWarning("2025년 7월 인사발령 사항")).toContain("인사발령");
-    expect(personnelListWarning("성명 직급 소속 홍길동 사무관")).toContain("성명");
-    expect(personnelListWarning("유연근무제 운영 지침입니다.")).toBeNull();
+    expect(personnelListWarning("성명 홍길동 김영희")).toContain("성명");
+    expect(personnelListWarning("본문에는 이름이 없습니다", "7월 승진자 명단")).toContain("승진자 명단");
+    expect(personnelListWarning("유연근무제 운영 지침입니다.", "유연근무 지침")).toBeNull();
   });
 });
 
@@ -126,9 +137,9 @@ describe("파일 변환", () => {
     expect(pages[0]).toContain("Leave policy page one");
   });
 
-  it("첨부파일을 내려받아 조각으로 만들고, 같은 문서의 이전 판은 개정 전으로 표시된다", async () => {
+  it("첨부파일을 내려받아 조각으로 만들고, 같은 문서의 이전 판은 (새 판에서 없어진 조항까지) 개정 전으로 표시된다", async () => {
     const files: Record<string, Uint8Array> = {
-      "https://www.mpm.go.kr/files/v1.hwpx": await makeHwpx(["제1조(기간) 휴직은 1년으로 한다.", "제2조(신청) 신청서를 낸다."]),
+      "https://www.mpm.go.kr/files/v1.hwpx": await makeHwpx(["제1조(기간) 휴직은 1년으로 한다.", "제2조(신청) 신청서를 낸다.", "제3조(특례) 옛 특례를 둔다."]),
       "https://www.mpm.go.kr/files/v2.hwpx": await makeHwpx(["제1조(기간) 휴직은 3년으로 한다.", "제2조(신청) 신청서를 낸다."]),
     };
     const fakeFetch = (async (url: string) => new Response(files[url] as BlobPart)) as unknown as typeof fetch;
@@ -140,7 +151,17 @@ describe("파일 변환", () => {
     expect(v2.chunks[0]).toMatchObject({ docName: "휴직 지침", effectiveDate: "2025-01-01", mock: false, url: "https://www.mpm.go.kr/files/v2.hwpx" });
 
     const marked = markSuperseded([...v1.chunks, ...v2.chunks]);
-    expect(marked.filter((c) => c.superseded).map((c) => `${c.effectiveDate} ${c.location}`)).toEqual(["2024-01-01 제1조", "2024-01-01 제2조"]);
+    expect(marked.filter((c) => c.superseded).map((c) => `${c.effectiveDate} ${c.location}`)).toEqual([
+      "2024-01-01 제1조",
+      "2024-01-01 제2조",
+      "2024-01-01 제3조", // 새 판에 없는 조항도 옛 판이므로 개정 전
+    ]);
+    expect(marked.filter((c) => !c.superseded).every((c) => c.effectiveDate === "2025-01-01")).toBe(true);
+  });
+
+  it("이미 개정 전으로 저장된 표시는 다시 계산해도 지워지지 않는다", () => {
+    const stored = { id: "a", docName: "단독 문서", location: "제1조", text: "옛 내용", effectiveDate: "2020-01-01", url: null, superseded: true, mock: false };
+    expect(markSuperseded([stored])[0].superseded).toBe(true);
   });
 
   it("내려받기에 실패하면 이유를 알려 준다", async () => {

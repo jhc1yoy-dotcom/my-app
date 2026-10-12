@@ -79,12 +79,15 @@ src/
   components/             # 화면 컴포넌트
   lib/
     types.ts              # 공통 데이터 형식
+    auth.ts               # 접속 비밀번호 확인 (서버 전용)
+    format.ts             # 날짜 표시 등 화면·서버 공용 함수
+    api/                  # 공통 오류 형식, 입력 검사 규칙(zod)
     rules/                # 규칙 점검기
-    search/               # 자료 검색
+    search/               # 자료 검색, 개정 전 표시
     ai/                   # 답변·원고 만들기 (모의 / 실제 분기, OPENAI_MODEL 상수)
-    draft/                # 슬라이드 나누기, 말씀자료 분량 맞추기
+    draft/                # 출처 → 조각 되찾기, 슬라이드 나누기, 말씀자료 분량 맞추기
     export/               # .pptx 생성
-    sources/              # 법제처 API, PDF·HWPX 변환 (최신화 명령 전용)
+    sources/              # 법제처 API, PDF·HWPX 변환, 목록 점검 (최신화 명령 전용)
 ```
 
 - 자료는 `data/corpus.json` **파일 하나**에 모은다. 배포된 사이트는 이 파일을 읽기만 하고, 실행 중에 파일을 쓰지 않는다 (Vercel 제약).

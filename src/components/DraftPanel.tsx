@@ -9,7 +9,7 @@ import type { ApiError } from "@/lib/api/errors";
 import type { DraftResult } from "@/lib/ai/draft";
 import { LIMITS, shortenedNotice } from "@/lib/rules/constants";
 import { countChars } from "@/lib/rules/checks";
-import { formatSpeechText } from "@/lib/draft/speech";
+import { formatSpeechText, speechShortenedNotice } from "@/lib/draft/speech";
 import SlidePreview from "./SlidePreview";
 import SpeechPreview from "./SpeechPreview";
 
@@ -59,7 +59,9 @@ export default function DraftPanel({ question, answer, onClose }: Props) {
     setError(null);
     setResult(null);
     try {
-      const res = await post("/api/draft", { question, citations: answer.citations, kind, audience, slides, minutes });
+      // 고른 종류의 분량만 보낸다 (PPT면 장수, 말씀자료면 분).
+      const amount = kind === "ppt" ? { slides } : { minutes };
+      const res = await post("/api/draft", { question, citations: answer.citations, kind, audience, ...amount });
       if (!res) return;
       const data: DraftResult | ApiError = await res.json();
       if (!res.ok || "error" in data) setError("error" in data ? data.error.message : "잠시 후 다시 시도해 주세요.");
@@ -101,7 +103,7 @@ export default function DraftPanel({ question, answer, onClose }: Props) {
   const shortened = result?.slides
     ? shortenedNotice(result.slides.length, "장")
     : result?.speech
-      ? shortenedNotice(Math.max(1, Math.round(countChars(result.speech.body) / LIMITS.speechCharsPerMinute)), "분")
+      ? speechShortenedNotice(result.speech)
       : "";
   const audienceOk = audience.trim().length > 0 && audience.trim().length <= LIMITS.audienceMaxChars;
 

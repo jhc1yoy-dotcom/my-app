@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { TestQuestion } from "@/lib/types";
 import { checkSlides, checkSpeech, countChars, speechCharRange, startsWithDisclaimer } from "@/lib/rules/checks";
 import { DISCLAIMER } from "@/lib/rules/constants";
-import { formatSpeechText } from "@/lib/draft/speech";
+import { formatSpeechText, speechShortenedNotice } from "@/lib/draft/speech";
 import { wrapLines } from "@/lib/draft/text";
 import { buildPptx } from "@/lib/export/pptx";
 import testFile from "../../../data/test-questions.json";
@@ -85,6 +85,12 @@ describe("말씀자료", () => {
       if (speech.shortened) expect(txt).toContain("자료가 부족해");
     });
   }
+
+  it("분량 부족 안내는 실제 분량을 알려 주고, 1분이 안 되면 따로 표현한다", () => {
+    const base = { minutes: 5, citations: [], shortened: true };
+    expect(speechShortenedNotice({ ...base, body: "가".repeat(100) })).toBe("자료가 부족해 1분이 안 되는 분량만 작성했습니다.");
+    expect(speechShortenedNotice({ ...base, body: "가".repeat(700) })).toBe("자료가 부족해 2분 분량만 작성했습니다.");
+  });
 
   it("1분 요청은 근거가 넉넉하면 분량 부족 없이 270~330자로 맞춘다", () => {
     const r = draftFor("육아휴직 중 승진할 수 있나요?", "speech", 10, 1);

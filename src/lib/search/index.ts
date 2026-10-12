@@ -133,16 +133,19 @@ export function search(question: string, chunks: Chunk[]): SearchHit[] {
   return picked.sort((a, b) => Number(a.chunk.superseded) - Number(b.chunk.superseded));
 }
 
-/** 같은 문서명·같은 조항 중 시행일이 가장 늦은 것만 현행, 나머지는 개정 전으로 표시한다. */
+/**
+ * 개정 전 표시 (DESIGN 3.3): 같은 문서명에 더 최신 판(시행일)이 있으면, 옛 판의 조각은 모두 개정 전이다.
+ * 조항 단위가 아니라 문서 단위로 보므로, 새 판에서 없어진 조항도 개정 전으로 표시된다.
+ * 이미 개정 전으로 저장된 표시는 지우지 않는다.
+ */
 export function markSuperseded(chunks: Chunk[]): Chunk[] {
   const latest = new Map<string, string>();
   for (const c of chunks) {
-    const key = `${c.docName}|${c.location}`;
-    const prev = latest.get(key);
-    if (!prev || c.effectiveDate > prev) latest.set(key, c.effectiveDate);
+    const prev = latest.get(c.docName);
+    if (!prev || c.effectiveDate > prev) latest.set(c.docName, c.effectiveDate);
   }
   return chunks.map((c) => ({
     ...c,
-    superseded: c.effectiveDate < (latest.get(`${c.docName}|${c.location}`) ?? c.effectiveDate),
+    superseded: c.superseded || c.effectiveDate < (latest.get(c.docName) ?? c.effectiveDate),
   }));
 }

@@ -42,7 +42,7 @@ export async function collectFile(source: Source, fetcher: typeof fetch = fetch)
   const pieces = kind === "pdf" ? piecesFromPages(await pdfToPages(data)) : piecesFromParagraphs(await hwpxToParagraphs(data));
   const warnings: string[] = [];
   if (pieces.length === 0) warnings.push("글자를 뽑지 못했습니다 (스캔본일 수 있음. 스캔본·OCR은 다루지 않습니다)");
-  const privacy = personnelListWarning(pieces.map((p) => p.text).join(" "));
+  const privacy = personnelListWarning(pieces.map((p) => p.text).join(" "), source.name);
   if (privacy) warnings.push(privacy);
 
   return { chunks: piecesToChunks(source, pieces, source.version!, url), warnings };

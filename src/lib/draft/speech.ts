@@ -2,7 +2,7 @@
 // 1분 300자(±10%, 본문만 셈), 최대 3,000자, "~습니다"체, 끝에 출처 단락.
 // 자료가 모자라면 근거 원문을 다시 풀어 읽는 문단으로 채우고, 그래도 모자라면 짧게 만들고 표시한다.
 import type { Manuscript, Speech } from "@/lib/types";
-import { DISCLAIMER, SUPERSEDED_LABEL, shortenedNotice } from "@/lib/rules/constants";
+import { DISCLAIMER, LIMITS, SUPERSEDED_LABEL, shortenedNotice } from "@/lib/rules/constants";
 import { countChars, speechCharRange } from "@/lib/rules/checks";
 import { formatDate } from "@/lib/format";
 import { splitSentences } from "./text";
@@ -75,11 +75,17 @@ export function buildSpeech(m: Manuscript, minutes: number, audience: string): S
   return { body, minutes, citations: m.citations, shortened: countChars(body) < range.min };
 }
 
+/** 말씀자료 분량 부족 안내: 실제 본문 분량을 분 단위로 알려 준다 (1분이 안 되면 따로 표현). */
+export function speechShortenedNotice(speech: Speech): string {
+  const actual = countChars(speech.body) / LIMITS.speechCharsPerMinute;
+  if (actual < 1) return "자료가 부족해 1분이 안 되는 분량만 작성했습니다.";
+  return shortenedNotice(Math.floor(actual), "분");
+}
+
 /** 내려받을 .txt 내용: 첫 줄 안내문 → 제목 → (분량 부족 안내) → 본문 → 출처 단락 */
 export function formatSpeechText(speech: Speech, title: string): string {
-  const actualMinutes = Math.max(1, Math.round(countChars(speech.body) / 300));
   const parts = [DISCLAIMER, "", title];
-  if (speech.shortened) parts.push(shortenedNotice(actualMinutes, "분"));
+  if (speech.shortened) parts.push(speechShortenedNotice(speech));
   parts.push("", speech.body, "", "출처");
   for (const c of speech.citations) {
     parts.push(`- ${c.docName} ${c.location} (${formatDate(c.effectiveDate)} 시행)${c.superseded ? ` ${SUPERSEDED_LABEL}` : ""}`);

@@ -1,7 +1,7 @@
 import ChatPanel from "@/components/ChatPanel";
 import { logout } from "./login/actions";
 
-// 메인 대시보드 (DESIGN 2.2): 머리글 + 대화 영역 + 입력창. 결과물 패널은 다음 묶음에서 붙인다.
+// 메인 대시보드 (DESIGN 2.2): 머리글 + 대화 영역·입력창·결과물 패널(ChatPanel 안)
 export default function Home() {
   return (
     <div className="flex h-dvh flex-col">

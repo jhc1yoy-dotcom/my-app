@@ -34,21 +34,28 @@ export function splitByArticle(text: string): Piece[] {
     .filter((p) => p.text.length >= MIN_PIECE_CHARS);
 }
 
-/** 긴 조각을 문장 경계에서 MAX_PIECE_CHARS 이내로 나눈다. 같은 조항(쪽) 이름을 유지한다. */
+/**
+ * 긴 조각을 문장 경계에서 MAX_PIECE_CHARS 이내로 나눈다.
+ * 나눈 조각에는 "제5조 (1/3)"처럼 서로 다른 이름을 붙인다.
+ * (출처는 문서명·조항·시행일로 조각을 되찾으므로, 이름이 겹치면 결과물이 다른 조각으로 만들어질 수 있다.)
+ */
 export function limitLength(pieces: Piece[]): Piece[] {
   return pieces.flatMap((p) => {
     if (p.text.length <= MAX_PIECE_CHARS) return [p];
     const sentences = p.text.split(/(?<=[.。])\s+/);
-    const out: Piece[] = [];
+    const texts: string[] = [];
     let buf = "";
     for (const s of sentences) {
       if (buf && (buf + " " + s).length > MAX_PIECE_CHARS) {
-        out.push({ location: p.location, text: buf });
+        texts.push(buf);
         buf = s;
       } else buf = buf ? `${buf} ${s}` : s;
     }
-    if (buf) out.push({ location: p.location, text: buf.slice(0, MAX_PIECE_CHARS * 2) });
-    return out;
+    if (buf) texts.push(buf);
+    // 마침표 없이 아주 긴 문장은 글자 수로 자른다.
+    const parts = texts.flatMap((t) => t.match(new RegExp(`[\\s\\S]{1,${MAX_PIECE_CHARS}}`, "g")) ?? [t]);
+    if (parts.length === 1) return [{ location: p.location, text: parts[0] }];
+    return parts.map((text, i) => ({ location: `${p.location} (${i + 1}/${parts.length})`, text }));
   });
 }
 
