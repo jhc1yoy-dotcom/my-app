@@ -11,10 +11,10 @@ export const QuestionSchema = z
   .max(LIMITS.questionMaxChars, `질문은 ${LIMITS.questionMaxChars}자 이내로 입력해 주세요.`);
 
 export const CitationSchema = z.object({
-  docName: z.string().min(1),
-  location: z.string().min(1),
+  docName: z.string().min(1).max(200),
+  location: z.string().min(1).max(50),
   effectiveDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  url: z.string().nullable(),
+  url: z.string().max(500).nullable(),
   superseded: z.boolean(),
 });
 
@@ -65,12 +65,17 @@ export const DraftSchema = z
     };
   });
 
+/** 발표자 메모 최대 글자 수 (전체 출처 + 근거 400자 정도가 들어간다) */
+const NOTES_MAX_CHARS = 1000;
+
+// 화면이 보낸 슬라이드는 길이·개수를 먼저 제한한다 (아주 큰 요청으로 서버를 느리게 만드는 것 방지).
+// 30자·5개 규칙 자체는 이후 규칙 점검기가 한 번 더 확인한다.
 export const SlideSchema = z.object({
-  no: z.number().int().min(1),
-  title: z.string(),
-  bullets: z.array(z.string()),
+  no: z.number().int().min(1).max(LIMITS.slides.max + LIMITS.slides.tolerance),
+  title: z.string().max(LIMITS.lineMaxChars),
+  bullets: z.array(z.string().max(LIMITS.lineMaxChars)).max(LIMITS.bulletsPerSlideMax),
   kind: z.enum(["cover", "body", "sources"]),
-  notes: z.string().optional(),
+  notes: z.string().max(NOTES_MAX_CHARS).optional(),
 });
 
 export const ExportPptxSchema = z.object({

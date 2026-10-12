@@ -265,7 +265,7 @@ data/sources.json ──▶ ⓪ 목록 점검: 공공누리 유형이 비어 있
 2. **자료 파일은 코드에서 `import`로 불러온다** (예: `import corpus from "../../../data/corpus.json"`). 이렇게 해야 빌드할 때 파일이 서버 묶음에 함께 들어가 배포 후에도 찾을 수 있다. 실행 중에 경로를 조합해 파일을 여는 방식은 쓰지 않는다. (부득이 그렇게 할 때는 `next.config.ts`의 `outputFileTracingIncludes`에 `data/**`를 등록한다.)
 3. `data/test-questions.json`은 시험(`npm test`)에서만 쓰고, 화면·API 코드는 이 파일에 의존하지 않는다.
 4. PPT 파일은 서버 메모리에서 만들어 바로 내려보내고, 디스크에 저장하지 않는다.
-5. 비밀값(`APP_PASSWORD`, `OPENAI_API_KEY` 등)은 `.env`에만 두고, 배포 시 Vercel 환경변수로 등록한다. `NEXT_PUBLIC_`을 붙이지 않는다.
+5. 비밀값(`APP_PASSWORD`, `AUTH_SECRET`, `OPENAI_API_KEY` 등)은 `.env`에만 두고, 배포 시 Vercel 환경변수로 등록한다. `NEXT_PUBLIC_`을 붙이지 않는다. `.vercelignore`로 `.env`가 배포 파일에 섞이지 않게 막고, 관리자용 토큰은 Vercel에 등록하지 않는다.
 6. **모의/실제 전환 스위치는 `AI_MODE` 하나**다. 기본값은 `mock`이고, `real`로 정해야만 실제 AI를 부른다. 이번 사이클에는 `openai` 패키지를 설치하지 않고 `OPENAI_API_KEY`도 쓰지 않는다.
 7. 최신화 명령은 배포 환경이 아니라 관리자 컴퓨터에서만 실행한다.
 
@@ -334,7 +334,10 @@ data/sources.json ──▶ ⓪ 목록 점검: 공공누리 유형이 비어 있
 
 ## 9. 보안·개인정보
 
-- 접속 비밀번호: Proxy가 모든 화면·API 앞에서 확인 (완료). 새 API도 예외 없이 적용된다.
+- 접속 비밀번호: Proxy가 모든 화면·API 앞에서 확인 (완료). 새 API도 예외 없이 적용된다. 확인을 건너뛰는 정적 파일은 이름을 정확히 적는다 (`*.svg` 같은 넓은 예외 금지).
+- 로그인 쿠키: "발급시각.서명" 형식, 서명 열쇠는 `AUTH_SECRET`, 서버에서 7일 만료 확인, 비밀번호를 바꾸면 기존 쿠키 무효 (httpOnly·sameSite=lax·운영 환경 secure).
+- 보안 헤더: `frame-ancestors 'none'`, `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, `X-Powered-By` 숨김 (`next.config.ts`).
+- API 입력은 모든 칸에 길이·개수 제한을 둔다 (PPT 내보내기의 제목·글머리·발표자 메모 포함).
 - 질문 내용은 서버 기록(로그)에 남기지 않는다. 대화는 브라우저에만 있다.
 - 출처 링크는 수집 목록에 있는 공식 사이트 주소만 쓴다.
 - 최신화 시 개인 이름이 여럿 나오는 것으로 보이는 자료(인사발령 명단 등)는 경고를 띄우고, 관리자가 수집 목록에서 뺀다 (3.3 기준 참고).

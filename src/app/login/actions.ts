@@ -17,7 +17,7 @@ export async function login(
   formData: FormData,
 ): Promise<LoginState> {
   if (!isPasswordConfigured()) {
-    return { error: ".env에 APP_PASSWORD를 설정한 뒤 개발 서버를 다시 시작하세요." };
+    return { error: ".env에 APP_PASSWORD와 AUTH_SECRET을 설정한 뒤 개발 서버를 다시 시작하세요." };
   }
 
   const input = String(formData.get("password") ?? "");

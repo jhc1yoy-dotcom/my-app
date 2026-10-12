@@ -1,0 +1,10 @@
+# Vercel CLI로 배포할 때 올리지 않을 파일 (보안 점검 3번)
+# 비밀 정보: .env에는 관리자용 토큰(GitHub·Vercel·Supabase 등)이 들어 있다. 배포 환경변수는 Vercel 화면에서 따로 등록한다.
+.env
+.env*
+
+# 로컬 전용
+.bkit/
+trash-can/
+.next/
+node_modules/

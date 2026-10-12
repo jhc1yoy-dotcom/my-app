@@ -25,6 +25,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // 정적 파일(빌드 결과물, 이미지 최적화, 파비콘, public 폴더의 svg)은 검사하지 않는다.
-  matcher: ["/((?!_next/static|_next/image|favicon\\.ico|.*\\.svg$).*)"],
+  // 정적 파일(빌드 결과물, 이미지 최적화, 파비콘, public 폴더의 기본 svg 5개)만 검사하지 않는다.
+  // "아무 이름.svg"로 예외를 두면, 나중에 만든 동적 경로를 x.svg로 요청해 비밀번호 확인을 피할 수 있어 파일명을 정확히 적는다.
+  matcher: ["/((?!_next/static|_next/image|favicon\\.ico$|(?:file|globe|next|vercel|window)\\.svg$).*)"],
 };

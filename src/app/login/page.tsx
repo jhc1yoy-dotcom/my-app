@@ -23,9 +23,9 @@ export default async function LoginPage() {
           <LoginForm />
         ) : (
           <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-200">
-            비밀번호가 설정되지 않았습니다. <code>.env</code> 파일의{" "}
-            <code>APP_PASSWORD</code>에 비밀번호를 입력한 뒤 개발 서버를 다시
-            시작하세요.
+            비밀번호가 설정되지 않았습니다. <code>.env</code> 파일에{" "}
+            <code>APP_PASSWORD</code>(비밀번호)와 <code>AUTH_SECRET</code>(32자 이상
+            무작위 값)을 입력한 뒤 개발 서버를 다시 시작하세요.
           </p>
         )}
       </div>
