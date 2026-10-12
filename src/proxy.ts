@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { AUTH_COOKIE, verifyAuthToken } from "@/lib/auth";
+import { errorResponse } from "@/lib/api/errors";
 
 // 모든 화면과 API 앞에서 접속 비밀번호 통과 여부를 확인한다.
 export function proxy(request: NextRequest) {
@@ -17,10 +18,7 @@ export function proxy(request: NextRequest) {
   if (authed) return NextResponse.next();
 
   if (pathname.startsWith("/api")) {
-    return NextResponse.json(
-      { error: "비밀번호 확인이 필요합니다." },
-      { status: 401 },
-    );
+    return errorResponse("UNAUTHORIZED", "비밀번호 확인이 필요합니다.");
   }
 
   return NextResponse.redirect(new URL("/login", request.url));

@@ -1,9 +1,10 @@
+import ChatPanel from "@/components/ChatPanel";
 import { logout } from "./login/actions";
 
-// 메인 대시보드 (질문·답변 화면). 질문·답변 기능은 이후 단계에서 채운다.
+// 메인 대시보드 (DESIGN 2.2): 머리글 + 대화 영역 + 입력창. 결과물 패널은 다음 묶음에서 붙인다.
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex h-dvh flex-col">
       <header className="flex items-center justify-between border-b border-black/10 px-4 py-5 sm:px-6 dark:border-white/15">
         <div className="flex items-baseline gap-3">
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
@@ -23,36 +24,7 @@ export default function Home() {
         </form>
       </header>
 
-      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-4 py-6 sm:px-6">
-        <section className="flex flex-1 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-black/15 p-8 text-center dark:border-white/20">
-          <p className="text-lg font-medium">인사·복무 규정에 대해 질문해 보세요</p>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            예: &quot;육아휴직 중 승진할 수 있나요?&quot;
-          </p>
-        </section>
-
-        <form className="mt-4 flex flex-col gap-2">
-          <p className="text-xs text-zinc-600 dark:text-zinc-400">
-            이름·주민등록번호 등 개인정보나 내부 자료를 입력하지 마세요.
-          </p>
-          <div className="flex gap-2">
-            <input
-              name="question"
-              maxLength={500}
-              placeholder="질문 기능은 준비 중입니다"
-              disabled
-              className="h-11 flex-1 rounded-lg border border-black/15 bg-transparent px-3 dark:border-white/20"
-            />
-            <button
-              type="submit"
-              disabled
-              className="h-11 rounded-lg bg-blue-700 px-5 font-medium text-white opacity-60"
-            >
-              질문
-            </button>
-          </div>
-        </form>
-      </main>
+      <ChatPanel />
     </div>
   );
 }
