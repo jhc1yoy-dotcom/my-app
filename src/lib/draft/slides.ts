@@ -20,7 +20,7 @@ export interface SlideResult {
 }
 
 function citationFull(c: Citation): string {
-  return `${c.docName} ${c.location} (${formatDate(c.effectiveDate)} 시행)${c.superseded ? ` ${SUPERSEDED_LABEL}` : ""}`;
+  return `${c.docName} ${c.location} (${formatDate(c.effectiveDate)} 기준)${c.superseded ? ` ${SUPERSEDED_LABEL}` : ""}`;
 }
 
 /** 문장 하나를 30자 줄들로 나누고, 5줄이 넘으면 5줄씩 끊어 여러 묶음으로 만든다. */
@@ -87,7 +87,7 @@ function sourcesSlide(citations: Citation[]): Omit<Slide, "no"> {
   const bullets = twoLines
     ? citations.flatMap((c) => [
         truncate(c.docName),
-        truncate(`${c.location} · ${formatDate(c.effectiveDate)} 시행${c.superseded ? ` ${SUPERSEDED_LABEL}` : ""}`),
+        truncate(`${c.location} · ${formatDate(c.effectiveDate)} 기준${c.superseded ? ` ${SUPERSEDED_LABEL}` : ""}`),
       ])
     : citations.map((c) => truncate(`${c.location} ${formatDate(c.effectiveDate)} ${c.docName}`));
   return { title: "출처", bullets, kind: "sources", notes: citations.map(citationFull).join("\n") };

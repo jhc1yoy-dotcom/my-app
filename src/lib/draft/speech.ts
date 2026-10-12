@@ -88,7 +88,7 @@ export function formatSpeechText(speech: Speech, title: string): string {
   if (speech.shortened) parts.push(speechShortenedNotice(speech));
   parts.push("", speech.body, "", "출처");
   for (const c of speech.citations) {
-    parts.push(`- ${c.docName} ${c.location} (${formatDate(c.effectiveDate)} 시행)${c.superseded ? ` ${SUPERSEDED_LABEL}` : ""}`);
+    parts.push(`- ${c.docName} ${c.location} (${formatDate(c.effectiveDate)} 기준)${c.superseded ? ` ${SUPERSEDED_LABEL}` : ""}`);
   }
   return parts.join("\n");
 }

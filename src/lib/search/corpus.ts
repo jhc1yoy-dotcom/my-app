@@ -11,8 +11,14 @@ export interface Corpus {
   mock: boolean;
 }
 
+/** 모의 자료 (자동 시험은 실제 자료와 상관없이 항상 이것을 쓴다) */
+export function getMockCorpus(): Corpus {
+  return { chunks: mockFile.chunks as Chunk[], mock: true };
+}
+
+/** 화면에서 쓰는 자료: 실제 자료가 있으면 실제, 없으면 모의 */
 export function getCorpus(): Corpus {
   const real = realFile.chunks as Chunk[];
   if (real.length > 0) return { chunks: real, mock: false };
-  return { chunks: mockFile.chunks as Chunk[], mock: true };
+  return getMockCorpus();
 }

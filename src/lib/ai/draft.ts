@@ -3,6 +3,7 @@
 import type { Citation, Manuscript, Slide, Speech } from "@/lib/types";
 import { checkSlides, checkSpeech, citationsToText } from "@/lib/rules/checks";
 import { resolveEvidence } from "@/lib/draft/evidence";
+import { getCorpus, type Corpus } from "@/lib/search/corpus";
 import { buildSlides } from "@/lib/draft/slides";
 import { buildSpeech } from "@/lib/draft/speech";
 import { RuleViolationError } from "./index";
@@ -35,8 +36,9 @@ export function allowedTextFor(m: Manuscript, extra: string[]): string {
   return [...m.evidence, citationsToText(m.citations), m.title, ...extra].join("\n");
 }
 
-export function makeDraft(req: DraftRequest): DraftResult {
-  const evidence = resolveEvidence(req.citations);
+/** @param corpus 출처를 되찾을 자료 묶음 (기본은 화면과 같은 자료, 자동 시험은 모의 자료) */
+export function makeDraft(req: DraftRequest, corpus: Corpus = getCorpus()): DraftResult {
+  const evidence = resolveEvidence(req.citations, corpus);
   if (!evidence) throw new EvidenceNotFoundError("출처에 해당하는 자료를 찾지 못했습니다.");
 
   const manuscript = buildMockManuscript(req.question, evidence.chunks);

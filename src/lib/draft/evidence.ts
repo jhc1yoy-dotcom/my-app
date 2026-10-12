@@ -1,7 +1,7 @@
 // 화면에서 받은 출처를 자료 묶음의 실제 조각으로 되찾는다 (서버 전용).
 // 결과물은 화면이 보낸 글이 아니라 자료 묶음에 실제로 있는 조각만으로 만든다 (PRD: 지어내지 않기).
 import type { Chunk, Citation } from "@/lib/types";
-import { getCorpus } from "@/lib/search/corpus";
+import { getCorpus, type Corpus } from "@/lib/search/corpus";
 import { markSuperseded } from "@/lib/search";
 
 export interface Evidence {
@@ -10,8 +10,7 @@ export interface Evidence {
 }
 
 /** 출처와 같은 문서명·조항·시행일의 조각을 찾는다. 하나라도 없으면 null. */
-export function resolveEvidence(citations: Citation[]): Evidence | null {
-  const corpus = getCorpus();
+export function resolveEvidence(citations: Citation[], corpus: Corpus = getCorpus()): Evidence | null {
   const all = markSuperseded(corpus.chunks);
   const chunks: Chunk[] = [];
   for (const c of citations) {

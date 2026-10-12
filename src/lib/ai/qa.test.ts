@@ -7,6 +7,10 @@ import { GUIDE_SITES, NO_EVIDENCE_MESSAGE } from "@/lib/rules/constants";
 import testFile from "../../../data/test-questions.json";
 import { answerQuestion, getAiMode, OPENAI_MODEL } from "./index";
 import { toPolite } from "./mock";
+import { getMockCorpus } from "@/lib/search/corpus";
+
+// 정답이 정해진 모의 자료로 채점한다 (실제 자료가 들어와도 시험 결과가 바뀌지 않게).
+const MOCK = getMockCorpus();
 
 const questions = testFile.questions as TestQuestion[];
 
@@ -27,7 +31,7 @@ describe("말투 바꾸기", () => {
 
 describe("시험 질문 20개", () => {
   it.each(questions.map((q) => [q.id, q] as const))("%s", (_id, q) => {
-    const answer = answerQuestion(q.question);
+    const answer = answerQuestion(q.question, MOCK);
 
     // 모든 답변은 규칙 점검을 통과해야 한다 (answerQuestion 안에서도 검사하지만 한 번 더 확인).
     expect(checkAnswer(answer, q.question, answer.citations.length ? answer.text : "")).toEqual([]);
@@ -57,7 +61,7 @@ describe("시험 질문 20개", () => {
   });
 
   it("개정·변경을 묻는 질문에는 개정 전 자료를 '(개정 전)'으로 표시해 함께 보여 준다", () => {
-    const answer = answerQuestion("육아휴직 경력 인정 기준이 예전과 달라졌나요?");
+    const answer = answerQuestion("육아휴직 경력 인정 기준이 예전과 달라졌나요?", MOCK);
     const old = answer.citations.find((c) => c.superseded);
     expect(old?.effectiveDate).toBe("2024-01-01");
     expect(answer.text).toContain("(개정 전)");
@@ -65,12 +69,12 @@ describe("시험 질문 20개", () => {
   });
 
   it("개정·변경을 묻지 않으면 개정 전 자료는 빠진다", () => {
-    const answer = answerQuestion("육아휴직 기간은 승진 소요 경력에 얼마나 인정되나요?");
+    const answer = answerQuestion("육아휴직 기간은 승진 소요 경력에 얼마나 인정되나요?", MOCK);
     expect(answer.citations.every((c) => !c.superseded)).toBe(true);
   });
 
   it("PRD 예시 질문 '육아휴직 중 승진할 수 있나요?'에 휴직 중 승진 규정으로 답한다", () => {
-    const answer = answerQuestion("육아휴직 중 승진할 수 있나요?");
+    const answer = answerQuestion("육아휴직 중 승진할 수 있나요?", MOCK);
     expect(answer.citations[0].location).toBe("제7조");
     expect(answer.text.split("\n")[0]).toContain("승진 심사 대상");
   });

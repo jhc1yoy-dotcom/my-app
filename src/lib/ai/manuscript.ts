@@ -3,6 +3,7 @@
 import type { Chunk, Manuscript } from "@/lib/types";
 import { LIMITS } from "@/lib/rules/constants";
 import { splitSentences, truncate } from "@/lib/draft/text";
+import { relevantExcerpt } from "./excerpt";
 import { toCitation, toPolite } from "./mock";
 
 /** 질문을 결과물 제목으로 바꾼다 (물음표·말끝 정리, 30자 이내). */
@@ -30,18 +31,25 @@ export function keyMessage(text: string): string {
   return [first, ...exceptions].join(" ");
 }
 
+/** 핵심 메시지·근거 하나의 최대 글자 수 (실제 자료의 긴 쪽에서 질문과 관련된 부분만 쓰기 위함) */
+const MESSAGE_MAX_CHARS = 200;
+const EVIDENCE_MAX_CHARS = 400;
+
 /**
  * 근거 조각(현행이 앞)으로 원고를 만든다.
- * - 핵심 메시지: 현행 조각마다 첫 문장 (최대 3개)
- * - 근거: 조각 전체 내용 ("~습니다"체). evidence[i]는 citations[i]의 내용이다 (개정 전 여부는 출처에 표시).
+ * - 핵심 메시지: 현행 조각마다 첫 문장(+다만 문장). 긴 조각은 질문과 가장 관련 있는 부분 (최대 3개)
+ * - 근거: 조각 내용 ("~습니다"체, 긴 조각은 관련 부분 400자 이내). evidence[i]는 citations[i]의 내용이다.
  */
 export function buildMockManuscript(question: string, chunks: Chunk[]): Manuscript {
   const current = chunks.filter((c) => !c.superseded);
   const messages = current
-    .map((c) => keyMessage(toPolite(c.text)))
+    .map((c) => {
+      const text = toPolite(c.text);
+      return text.length <= MESSAGE_MAX_CHARS ? keyMessage(text) : relevantExcerpt(text, question, MESSAGE_MAX_CHARS);
+    })
     .filter(Boolean)
     .slice(0, LIMITS.messagesMax);
-  const evidence = chunks.map((c) => toPolite(c.text));
+  const evidence = chunks.map((c) => relevantExcerpt(toPolite(c.text), question, EVIDENCE_MAX_CHARS));
   return {
     title: questionToTitle(question),
     messages,

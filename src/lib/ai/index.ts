@@ -4,7 +4,7 @@
 import type { Answer } from "@/lib/types";
 import { GUIDE_SITES, NO_EVIDENCE_MESSAGE } from "@/lib/rules/constants";
 import { checkAnswer, isIndividualCase, type Violation } from "@/lib/rules/checks";
-import { getCorpus } from "@/lib/search/corpus";
+import { getCorpus, type Corpus } from "@/lib/search/corpus";
 import { search } from "@/lib/search";
 import { buildMockAnswer } from "./mock";
 
@@ -25,8 +25,11 @@ export class RuleViolationError extends Error {
   }
 }
 
-export function answerQuestion(question: string): Answer {
-  const corpus = getCorpus();
+/**
+ * @param corpus 검색할 자료 묶음. 기본은 화면과 같은 자료(실제 자료가 있으면 실제, 없으면 모의).
+ *               자동 시험은 정답이 정해진 모의 자료를 직접 넘긴다.
+ */
+export function answerQuestion(question: string, corpus: Corpus = getCorpus()): Answer {
   const hits = search(question, corpus.chunks);
   const needsDeptCheck = isIndividualCase(question);
 
@@ -47,7 +50,7 @@ export function answerQuestion(question: string): Answer {
   }
 
   const chunks = hits.map((h) => h.chunk);
-  const answer = { ...buildMockAnswer(chunks, needsDeptCheck), mock: corpus.mock };
+  const answer = { ...buildMockAnswer(chunks, needsDeptCheck, question), mock: corpus.mock };
 
   const violations = checkAnswer(answer, question, chunks.map((c) => c.text).join("\n"));
   if (violations.length) throw new RuleViolationError(violations);

@@ -5,6 +5,7 @@ import type { Answer, Chunk, Citation } from "@/lib/types";
 import { LIMITS, SUPERSEDED_LABEL } from "@/lib/rules/constants";
 import { countChars } from "@/lib/rules/checks";
 import { formatDate } from "@/lib/format";
+import { relevantExcerpt } from "./excerpt";
 
 /** 규정 문장의 말끝을 "~습니다"체로 바꾼다 (예: "할 수 있다." → "할 수 있습니다."). */
 export function toPolite(sentence: string): string {
@@ -32,22 +33,26 @@ export function toCitation(c: Chunk): Citation {
 }
 
 function sourceLabel(c: Chunk): string {
-  return `${c.docName} ${c.location}(${formatDate(c.effectiveDate)} 시행)${c.superseded ? ` ${SUPERSEDED_LABEL}` : ""}`;
+  return `${c.docName} ${c.location}(${formatDate(c.effectiveDate)} 기준)${c.superseded ? ` ${SUPERSEDED_LABEL}` : ""}`;
 }
+
+/** 답변에 넣는 조각 내용의 최대 글자 수: 1순위(결론)와 나머지(관련 규정) */
+const FIRST_EXCERPT_CHARS = 250;
+const REST_EXCERPT_CHARS = 110;
 
 /**
  * 검색된 조각(현행이 앞, 최대 3개)으로 답변 본문과 출처를 만든다.
- * - 첫 문장: 1순위 조각의 내용 (결론)
+ * - 첫 문장: 1순위 조각에서 질문과 가장 관련 있는 부분 (결론)
  * - 이어서: 근거 문서, 나머지 조각은 "관련 규정"으로 덧붙인다 (500자를 넘으면 뺀다)
  */
-export function buildMockAnswer(chunks: Chunk[], needsDeptCheck: boolean): Answer {
+export function buildMockAnswer(chunks: Chunk[], needsDeptCheck: boolean, question = ""): Answer {
   const [first, ...rest] = chunks;
-  let text = `${toPolite(first.text)}\n(근거: ${sourceLabel(first)})`;
+  let text = `${toPolite(relevantExcerpt(first.text, question, FIRST_EXCERPT_CHARS))}\n(근거: ${sourceLabel(first)})`;
   const used: Chunk[] = [first];
 
   for (const c of rest) {
     const prefix = c.superseded ? "이전 기준" : "관련 규정";
-    const addition = `\n\n${prefix}: ${toPolite(c.text)}\n(근거: ${sourceLabel(c)})`;
+    const addition = `\n\n${prefix}: ${toPolite(relevantExcerpt(c.text, question, REST_EXCERPT_CHARS))}\n(근거: ${sourceLabel(c)})`;
     if (countChars(text + addition) > LIMITS.answerMaxChars) break;
     text += addition;
     used.push(c);

@@ -8,14 +8,17 @@ import { wrapLines } from "@/lib/draft/text";
 import { buildPptx } from "@/lib/export/pptx";
 import testFile from "../../../data/test-questions.json";
 import { answerQuestion } from "./index";
+import { getMockCorpus } from "@/lib/search/corpus";
 import { allowedTextFor, EvidenceNotFoundError, makeDraft } from "./draft";
 
 const questions = (testFile.questions as TestQuestion[]).filter((q) => q.category !== "no-evidence");
 const AUDIENCE = "신규 공무원";
+// 정답이 정해진 모의 자료로 시험한다 (실제 자료가 들어와도 시험 결과가 바뀌지 않게).
+const MOCK = getMockCorpus();
 
 function draftFor(question: string, kind: "ppt" | "speech", slides = 10, minutes = 5) {
-  const answer = answerQuestion(question);
-  return makeDraft({ question, citations: answer.citations, kind, audience: AUDIENCE, slides, minutes });
+  const answer = answerQuestion(question, MOCK);
+  return makeDraft({ question, citations: answer.citations, kind, audience: AUDIENCE, slides, minutes }, MOCK);
 }
 
 describe("줄 나누기", () => {

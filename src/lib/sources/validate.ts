@@ -8,8 +8,14 @@ export interface SourceProblem {
 }
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
-/** 첨부파일 직접 주소만 받는다 (게시판 페이지를 뒤지는 크롤링은 PRD 비범위). */
-const FILE_URL = /^https:\/\/\S+\.(pdf|hwpx)(\?\S*)?$/i;
+const HTTPS = /^https:\/\/\S+$/i;
+
+/** 파일 형식: fileType이 있으면 그것을, 없으면 주소의 확장자로 정한다. */
+export function fileKind(source: Pick<Source, "fileUrl" | "fileType">): "pdf" | "hwpx" | null {
+  if (source.fileType) return source.fileType;
+  const m = source.fileUrl?.toLowerCase().match(/\.(pdf|hwpx)(\?|$)/);
+  return m ? (m[1] as "pdf" | "hwpx") : null;
+}
 
 export function validateSources(sources: Source[]): { ok: Source[]; problems: SourceProblem[] } {
   const ok: Source[] = [];
@@ -20,12 +26,15 @@ export function validateSources(sources: Source[]): { ok: Source[]; problems: So
     if (!s.enabled) continue;
     const reasons: string[] = [];
     if (seen.has(s.id)) reasons.push("id가 다른 항목과 겹칩니다");
-    if (!s.kogl?.trim()) reasons.push("공공누리 유형(kogl)이 비어 있습니다");
+    if (!s.kogl?.trim()) reasons.push("공공누리 유형(kogl)이 비어 있습니다 (표시가 없으면 '공공누리 표시 없음 — 근거'를 적습니다)");
     if (s.kind === "law") {
       if (!s.lawName?.trim()) reasons.push("법령명(lawName)이 비어 있습니다");
     } else {
-      if (!s.fileUrl || !FILE_URL.test(s.fileUrl))
-        reasons.push("fileUrl은 https로 시작하고 .pdf 또는 .hwpx로 끝나는 첨부파일 직접 주소여야 합니다");
+      // 첨부파일 하나만 받는다 (게시판 페이지를 뒤지는 크롤링은 PRD 비범위).
+      if (!s.fileUrl || !HTTPS.test(s.fileUrl)) reasons.push("fileUrl은 https로 시작하는 첨부파일 직접 주소여야 합니다");
+      else if (!fileKind(s))
+        reasons.push("파일 형식을 알 수 없습니다 (주소가 .pdf/.hwpx로 끝나지 않으면 fileType에 pdf 또는 hwpx를 적습니다)");
+      if (s.pageUrl && !HTTPS.test(s.pageUrl)) reasons.push("pageUrl은 https로 시작해야 합니다");
       if (!s.version || !DATE.test(s.version))
         reasons.push("version(시행일·게시일)을 YYYY-MM-DD 형식으로 적어야 합니다");
     }
@@ -34,10 +43,4 @@ export function validateSources(sources: Source[]): { ok: Source[]; problems: So
     else ok.push(s);
   }
   return { ok, problems };
-}
-
-/** 파일 주소의 확장자로 형식을 정한다. */
-export function fileKind(url: string): "pdf" | "hwpx" | null {
-  const m = url.toLowerCase().match(/\.(pdf|hwpx)(\?|$)/);
-  return m ? (m[1] as "pdf" | "hwpx") : null;
 }

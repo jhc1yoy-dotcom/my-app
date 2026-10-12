@@ -13,6 +13,13 @@ export interface Source {
   lawName?: string;
   /** 지침·간행물이면 첨부파일(PDF·HWPX) 직접 주소. 게시판 페이지 주소는 받지 않는다. */
   fileUrl?: string;
+  /** 첨부파일 주소가 .pdf/.hwpx로 끝나지 않을 때 파일 형식 */
+  fileType?: "pdf" | "hwpx";
+  /**
+   * 첨부파일이 올라간 게시글 주소. 내려받을 때 "어느 페이지에서 왔는지"(Referer)로 보내고,
+   * 출처 링크로도 쓴다 (사용자가 눌러서 원문 게시글을 열 수 있도록).
+   */
+  pageUrl?: string;
   /** 이 판의 시행일(게시일). 같은 문서의 이전 판을 함께 두면 개정 전으로 표시된다. */
   version?: string;
   /** 공공누리 유형 (필수, 비어 있으면 수집 거부) */

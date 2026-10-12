@@ -45,7 +45,7 @@ export default function AnswerCard({ answer, onMakeDraft }: Props) {
             <p className="text-sm font-medium">출처</p>
             <ul className="mt-1 space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
               {answer.citations.map((c) => {
-                const label = `${c.docName} · ${c.location} · ${formatDate(c.effectiveDate)} 시행`;
+                const label = `${c.docName} · ${c.location} · ${formatDate(c.effectiveDate)} 기준`;
                 return (
                   <li key={`${c.docName}-${c.location}-${c.effectiveDate}`}>
                     {c.url ? (

@@ -11,7 +11,8 @@ export function splitSentences(text: string): string[] {
 
 /** 한 줄이 max자를 넘으면 줄임표(…)로 줄인다. */
 export function truncate(text: string, max: number = LIMITS.lineMaxChars): string {
-  return text.length <= max ? text : `${text.slice(0, max - 1)}…`;
+  // 두 칸짜리 문자(일부 기호)를 반으로 자르지 않도록 글자 단위(Array.from)로 자른다.
+  return text.length <= max ? text : `${Array.from(text).slice(0, max - 1).join("")}…`;
 }
 
 /**
@@ -23,7 +24,7 @@ export function wrapLines(text: string, max: number = LIMITS.lineMaxChars): stri
   for (const sentence of splitSentences(text)) {
     let line = "";
     for (const word of sentence.split(/\s+/)) {
-      const pieces = word.length > max ? word.match(new RegExp(`.{1,${max}}`, "g")) ?? [word] : [word];
+      const pieces = word.length > max ? word.match(new RegExp(`.{1,${max}}`, "gu")) ?? [word] : [word];
       for (const piece of pieces) {
         const next = line ? `${line} ${piece}` : piece;
         if (next.length <= max) line = next;
