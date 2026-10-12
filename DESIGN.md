@@ -239,7 +239,7 @@ data/sources.json ──▶ ⓪ 목록 점검: 공공누리 유형이 비어 있
 | **pptxgenjs** | 코드로 PowerPoint(.pptx) 파일을 만들어 주는 도구 | PPT 내려받기 | PLAN 15번 |
 | **zod** | 들어온 입력이 규칙(500자, 5~20장 등)에 맞는지 자동으로 검사해 주는 도구 | 모든 API 입력 검사 | PLAN 9번 |
 | **unpdf** | PDF 파일에서 글자만 뽑아내는 도구 | 지침·간행물 최신화 | PLAN 19번 |
-| **jszip + fast-xml-parser** | HWPX(사실은 압축 파일)를 풀어 안의 글자를 꺼내는 도구 한 쌍 | 지침·간행물 최신화 | PLAN 19번 |
+| **jszip** | HWPX(사실은 압축 파일)를 풀어 안의 글자를 꺼내는 도구 (글자 태그만 읽으면 되어 XML 해석 도구는 쓰지 않음) | 지침·간행물 최신화 | PLAN 19번 |
 | **tsx** | 관리자 최신화 명령(TypeScript 파일)을 바로 실행해 주는 도구 | `npm run update-sources` | PLAN 20번 |
 | **Vitest** | 만든 기능이 규칙대로 동작하는지 자동으로 시험해 주는 도구 | 규칙 점검기·검색 시험 (`npm test`) | PLAN 2번 |
 | (추후) **openai** | OpenAI(gpt-4o-mini)에 질문을 보내고 답을 받는 공식 연결 도구 | 실제 AI 연결 | PLAN 23번, 지시 시 |

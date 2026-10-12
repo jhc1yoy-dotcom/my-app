@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "update-sources": "tsx scripts/update-sources.ts"
   },
   "dependencies": {
     "next": "16.3.8",
@@ -23,8 +24,11 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
+    "jszip": "^3.10.2",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5",
+    "unpdf": "^1.8.1",
     "vitest": "^5.0.3"
   }
 }
