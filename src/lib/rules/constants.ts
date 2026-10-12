@@ -32,6 +32,7 @@ export const LIMITS = {
   speechTolerance: 0.1,
   speechMaxChars: 3000,
   messagesMax: 3,
+  audienceMaxChars: 20,
 } as const;
 
 /** 개별 사안 판정용 낱말 (DESIGN 3.4). ㉠과 ㉡이 함께 있으면 개별 사안. */

@@ -3,15 +3,9 @@
 import { z } from "zod";
 import { answerQuestion, RuleViolationError } from "@/lib/ai";
 import { errorResponse } from "@/lib/api/errors";
-import { LIMITS } from "@/lib/rules/constants";
+import { QuestionSchema } from "@/lib/api/schemas";
 
-const AskSchema = z.object({
-  question: z
-    .string()
-    .trim()
-    .min(1, "질문을 입력해 주세요.")
-    .max(LIMITS.questionMaxChars, `질문은 ${LIMITS.questionMaxChars}자 이내로 입력해 주세요.`),
-});
+const AskSchema = z.object({ question: QuestionSchema });
 
 export async function POST(request: Request) {
   let body: unknown;

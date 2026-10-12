@@ -195,12 +195,12 @@ export function checkSpeech(speech: Speech, allowedText: string): Violation[] {
   if (!speech.shortened && chars < range.min)
     v.push({ rule: "speech-length", message: `본문이 ${range.min}자보다 짧습니다 (현재 ${chars}자).` });
 
-  // "~습니다"체: 모든 문장이 "니다." 또는 "니까?"로 끝나야 한다.
+  // "~습니다"체: 모든 문장이 "니다." 또는 "니까."/"니까?"로 끝나야 한다 (예: "안녕하십니까.").
   const sentences = speech.body
     .split(/(?<=[.?!])\s+/)
     .map((s) => s.trim())
     .filter(Boolean);
-  const bad = sentences.filter((s) => !/(니다\.|니까\?)$/.test(s));
+  const bad = sentences.filter((s) => !/(니다\.|니까[.?])$/.test(s));
   if (bad.length)
     v.push({ rule: "speech-style", message: `"~습니다"체가 아닌 문장이 있습니다: "${bad[0]}"` });
 

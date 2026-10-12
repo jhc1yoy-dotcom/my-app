@@ -3,7 +3,13 @@ import type { Answer } from "@/lib/types";
 import { DEPT_CHECK_MESSAGE, SUPERSEDED_LABEL } from "@/lib/rules/constants";
 import { formatDate } from "@/lib/format";
 
-export default function AnswerCard({ answer }: { answer: Answer }) {
+interface Props {
+  answer: Answer;
+  /** [결과물 만들기]를 눌렀을 때 */
+  onMakeDraft: () => void;
+}
+
+export default function AnswerCard({ answer, onMakeDraft }: Props) {
   return (
     <article className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm dark:border-white/15 dark:bg-zinc-900">
       {answer.mock && (
@@ -59,11 +65,10 @@ export default function AnswerCard({ answer }: { answer: Answer }) {
           </div>
           <button
             type="button"
-            disabled
-            title="다음 단계에서 열립니다"
-            className="mt-4 rounded-lg border border-black/15 px-3 py-1.5 text-sm opacity-50 dark:border-white/20"
+            onClick={onMakeDraft}
+            className="mt-4 rounded-lg border border-blue-700 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-50 dark:border-blue-400 dark:text-blue-300 dark:hover:bg-blue-950"
           >
-            결과물 만들기 (준비 중)
+            결과물 만들기
           </button>
         </>
       )}

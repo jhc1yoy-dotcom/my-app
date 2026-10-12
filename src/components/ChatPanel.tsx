@@ -7,17 +7,22 @@ import { useRouter } from "next/navigation";
 import type { Answer } from "@/lib/types";
 import type { ApiError } from "@/lib/api/errors";
 import AnswerCard from "./AnswerCard";
+import DraftPanel from "./DraftPanel";
 import QuestionInput from "./QuestionInput";
 
 const EXAMPLE_QUESTION = "육아휴직 중 승진할 수 있나요?";
 
 type Turn =
   | { id: number; kind: "question"; text: string }
-  | { id: number; kind: "answer"; answer: Answer }
+  | { id: number; kind: "answer"; answer: Answer; question: string }
   | { id: number; kind: "error"; message: string; question: string };
+
+type AnswerTurn = Extract<Turn, { kind: "answer" }>;
 
 export default function ChatPanel() {
   const [turns, setTurns] = useState<Turn[]>([]);
+  /** 결과물 패널을 연 답변 (없으면 패널 닫힘) */
+  const [draftFor, setDraftFor] = useState<AnswerTurn | null>(null);
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
   const nextId = useRef(0);
@@ -55,7 +60,7 @@ export default function ChatPanel() {
         const message = "error" in data ? data.error.message : "잠시 후 다시 시도해 주세요.";
         setTurns((prev) => [...prev, { id: nextId.current++, kind: "error", message, question: q }]);
       } else {
-        setTurns((prev) => [...prev, { id: nextId.current++, kind: "answer", answer: data }]);
+        setTurns((prev) => [...prev, { id: nextId.current++, kind: "answer", answer: data, question: q }]);
       }
     } catch {
       setTurns((prev) => [
@@ -68,61 +73,75 @@ export default function ChatPanel() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-        <div className="mx-auto flex max-w-3xl flex-col gap-4">
-          {turns.length === 0 && (
-            <section className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-black/15 p-8 text-center dark:border-white/20">
-              <p className="text-lg font-medium">인사·복무 규정에 대해 질문해 보세요</p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                모아 둔 자료에서 근거를 찾아 출처와 함께 답합니다.
-              </p>
-              <button
-                type="button"
-                onClick={() => ask(EXAMPLE_QUESTION)}
-                className="rounded-full border border-black/15 px-4 py-1.5 text-sm hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/10"
-              >
-                예: {EXAMPLE_QUESTION}
-              </button>
-            </section>
-          )}
-
-          {turns.map((t) => {
-            if (t.kind === "question")
-              return (
-                <div key={t.id} className="self-end max-w-[85%] whitespace-pre-line rounded-2xl bg-blue-700 px-4 py-2 text-white">
-                  {t.text}
-                </div>
-              );
-            if (t.kind === "answer") return <AnswerCard key={t.id} answer={t.answer} />;
-            return (
-              <div key={t.id} role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
-                <p>{t.message}</p>
+    <div className="flex min-h-0 flex-1">
+      <div className="flex min-h-0 flex-1 flex-col">
+        <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+          <div className="mx-auto flex max-w-3xl flex-col gap-4">
+            {turns.length === 0 && (
+              <section className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-black/15 p-8 text-center dark:border-white/20">
+                <p className="text-lg font-medium">인사·복무 규정에 대해 질문해 보세요</p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  모아 둔 자료에서 근거를 찾아 출처와 함께 답합니다.
+                </p>
                 <button
                   type="button"
-                  onClick={() => ask(t.question, true)}
-                  className="mt-2 rounded-lg border border-red-300 px-3 py-1 hover:bg-red-100 dark:border-red-800 dark:hover:bg-red-900"
+                  onClick={() => ask(EXAMPLE_QUESTION)}
+                  className="rounded-full border border-black/15 px-4 py-1.5 text-sm hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/10"
                 >
-                  다시 시도
+                  예: {EXAMPLE_QUESTION}
                 </button>
-              </div>
-            );
-          })}
-
-          {pending && (
-            <p className="text-sm text-zinc-600 dark:text-zinc-400" aria-live="polite">
-              자료를 찾고 있습니다…
-            </p>
-          )}
-          <div ref={bottomRef} />
+              </section>
+            )}
+  
+            {turns.map((t) => {
+              if (t.kind === "question")
+                return (
+                  <div key={t.id} className="self-end max-w-[85%] whitespace-pre-line rounded-2xl bg-blue-700 px-4 py-2 text-white">
+                    {t.text}
+                  </div>
+                );
+              if (t.kind === "answer") return <AnswerCard key={t.id} answer={t.answer} onMakeDraft={() => setDraftFor(t)} />;
+              return (
+                <div key={t.id} role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+                  <p>{t.message}</p>
+                  <button
+                    type="button"
+                    onClick={() => ask(t.question, true)}
+                    className="mt-2 rounded-lg border border-red-300 px-3 py-1 hover:bg-red-100 dark:border-red-800 dark:hover:bg-red-900"
+                  >
+                    다시 시도
+                  </button>
+                </div>
+              );
+            })}
+  
+            {pending && (
+              <p className="text-sm text-zinc-600 dark:text-zinc-400" aria-live="polite">
+                자료를 찾고 있습니다…
+              </p>
+            )}
+            <div ref={bottomRef} />
+          </div>
+        </div>
+  
+        <div className="border-t border-black/10 bg-background px-4 py-3 sm:px-6 dark:border-white/15">
+          <div className="mx-auto max-w-3xl">
+            <QuestionInput value={input} onChange={setInput} onSubmit={() => ask(input)} disabled={pending} />
+          </div>
         </div>
       </div>
 
-      <div className="border-t border-black/10 bg-background px-4 py-3 sm:px-6 dark:border-white/15">
-        <div className="mx-auto max-w-3xl">
-          <QuestionInput value={input} onChange={setInput} onSubmit={() => ask(input)} disabled={pending} />
-        </div>
-      </div>
+      {/* 결과물 패널: 넓은 화면은 오른쪽, 휴대폰은 화면 전체를 덮는 창 (DESIGN 2.2·2.3) */}
+      {draftFor && (
+        <aside className="fixed inset-0 z-40 bg-background lg:static lg:z-auto lg:w-[28rem] lg:shrink-0 lg:border-l lg:border-black/10 dark:lg:border-white/15">
+          <DraftPanel
+            key={draftFor.id}
+            question={draftFor.question}
+            answer={draftFor.answer}
+            onClose={() => setDraftFor(null)}
+          />
+        </aside>
+      )}
     </div>
   );
 }
