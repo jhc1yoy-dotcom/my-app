@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 인사나침반
 
-## Getting Started
+인사혁신처 소관 공개 자료(법령·지침·간행물)를 근거로 인사·복무 질문에 **출처와 함께** 답하고,
+그 답으로 **발표자료(PPT)·말씀자료 초안**을 만들어 주는 웹 서비스입니다. (테스트 버전)
 
-First, run the development server:
+## 무엇을 하나요
+
+- **질문·답변**: 질문하면 모아 둔 자료에서 근거를 찾아 문서명·쪽(조항)·날짜를 붙여 답합니다. 근거가 없으면 지어내지 않고 "확인된 자료에서 찾을 수 없습니다"라고 답합니다.
+- **결과물 초안**: 답변으로 원고를 만든 뒤, 요청한 장수의 PPT(.pptx)나 요청한 분량의 말씀자료(.txt)를 만듭니다. 모든 결과물 첫 장/첫 줄에 "AI가 만든 초안입니다. 사용 전 검토가 필요합니다."가 들어갑니다.
+- **자료 최신화**: 관리자가 `npm run update-sources` 한 번으로 수집 목록의 PDF·HWPX를 글자로 바꿔 저장합니다.
+
+## 지금 상태
+
+- **모의 모드(AI 비용 0원)**: 실제 AI를 부르지 않고, 검색한 원문 문장을 조립해 답합니다. 실제 AI(gpt-4o-mini)는 추후 연결 예정입니다.
+- **수집 자료**: 「2024 공무원 인사실무」(인사혁신처 간행물). 법령(법제처 오픈 API)은 인증키 승인 후 추가 예정입니다.
+- **접속 비밀번호**로 관리자만 사용합니다.
+
+## 실행 방법 (내 컴퓨터)
+
+1. `.env` 파일에 아래 두 값을 넣습니다. (`.env`는 git에 올리지 않습니다)
+   - `APP_PASSWORD` — 접속 비밀번호 (16자 이상 무작위 권장)
+   - `AUTH_SECRET` — 로그인 쿠키 서명 열쇠 (32자 이상 무작위)
+2. 명령 실행:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. http://localhost:3000 에 접속해 비밀번호를 입력합니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| 명령 | 용도 |
+|---|---|
+| `npm run dev` | 개발 서버 |
+| `npm run build` | 배포용 빌드 |
+| `npm run lint` | 코드 검사 |
+| `npm test` | 규칙 점검기·검색 자동 시험 |
+| `npm run update-sources` | 자료 최신화 (관리자 컴퓨터에서만) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 기술
 
-## Learn More
+Next.js 16 · React 19 · TypeScript · Tailwind CSS · Vercel 배포 · pptxgenjs(PPT 생성) · zod(입력 검사) · Vitest(시험)
 
-To learn more about Next.js, take a look at the following resources:
+## 문서
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [PRD.md](PRD.md) — 기획서 · [PLAN.md](PLAN.md) — 개발 계획 · [DESIGN.md](DESIGN.md) — 설계
+- [ANALYSIS.md](ANALYSIS.md) · [CHECK.md](CHECK.md) — 점검 결과 · [CLAUDE.md](CLAUDE.md) — 작업 규칙
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 자료 출처와 이용
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 「2024 공무원 인사실무」: 인사혁신처 누리집 게시 간행물 (공공누리 표시 없음, 저작권법 제24조의2에 따른 자유이용으로 관리자 판단). 모든 답변·결과물에 출처를 표시합니다.
+- 이 서비스의 답변과 초안은 참고용이며, 최종 판단은 소관 부서에 확인해야 합니다.
