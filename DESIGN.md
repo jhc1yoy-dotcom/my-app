@@ -336,6 +336,7 @@ data/sources.json ──▶ ⓪ 목록 점검: 공공누리 유형이 비어 있
 
 - 접속 비밀번호: Proxy가 모든 화면·API 앞에서 확인 (완료). 새 API도 예외 없이 적용된다. 확인을 건너뛰는 정적 파일은 이름을 정확히 적는다 (`*.svg` 같은 넓은 예외 금지).
 - 로그인 쿠키: "발급시각.서명" 형식, 서명 열쇠는 `AUTH_SECRET`, 서버에서 7일 만료 확인, 비밀번호를 바꾸면 기존 쿠키 무효 (httpOnly·sameSite=lax·운영 환경 secure).
+- 비밀번호 시도 횟수 제한: 접속지별 1분 5회 실패 → 5분 차단, 전체 1분 30회 실패 → 5분 차단. 서버 메모리에 기록하므로 서버가 여러 대면 각자 센다 → 배포 시 Vercel 방화벽(WAF) 요청 제한 규칙을 `/login`에 함께 설정한다.
 - 보안 헤더: `frame-ancestors 'none'`, `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, `X-Powered-By` 숨김 (`next.config.ts`).
 - API 입력은 모든 칸에 길이·개수 제한을 둔다 (PPT 내보내기의 제목·글머리·발표자 메모 포함).
 - 질문 내용은 서버 기록(로그)에 남기지 않는다. 대화는 브라우저에만 있다.
